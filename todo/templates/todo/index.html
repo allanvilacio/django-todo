@@ -1,0 +1,158 @@
+{% extends 'todo/base.html' %}
+
+{% block title %}
+todo
+{% endblock %}
+
+{% block content %}
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoTodo">
+  Nova tarefa
+</button>
+<table class="table" id="lista-todos">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">Titulo</th>
+      <th scope="col">Data criação</th>
+      <th scope="col">Data entrega</th>
+      <th scope="col">Data conclusão</th>
+      <th scope="col">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius totam exercitationem debitis provident repellat,
+  mollitia consequuntur nemo cumque, iure rem velit autem dolorem fuga assumenda incidunt maxime. Atque, mollitia
+  deleniti.
+</p>
+
+<!-- Modal -->
+
+<div class="modal fade" id="modalNovoTodo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="modalNovoTodoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalNovoTodoLabel">Nova tarefa</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="newTodo(event)" id="form-nova-tarefa">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Titulo</label>
+            <input type="text" name="titulo" form="form-nova-tarefa" required>
+          </div>
+          <div class="md-3">
+            <div><label class="form-label">Descrição</label></div>
+            <textarea name="descricao" style="width: 100%;" rows="5" required></textarea>
+          </div>
+          <div class="md-3">
+            <label class="form-label">Data de entrega:</label>
+            <input type="date" name="data_entrega" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" form="form-nova-tarefa" data-bs-dismiss="modal">Criar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalTodoDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="modalTodoDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalTodoDeleteLabel">Excluir tarefa</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <span>Titulo:</span>
+          <span id="titulo"></span>
+        </div>
+        <div>
+          <div>Descrição:</div>
+          <span id="descricao"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id='btn-delete-todo' type="button" class="btn btn-danger" data-bs-dismiss="modal">Excluir</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalTodoConcluir" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="modalTodoConcluirLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalTodoConcluirLabel">Concluir tarefa</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <span>Titulo:</span>
+          <span id="titulo"></span>
+        </div>
+        <div>
+          <div>Descrição:</div>
+          <span id="descricao"></span>
+        </div>
+        <div>
+          <form id="form-modal-concluir">
+            <label> Data conclusão:</label>
+            <input type="date" id="data-conclusao" required>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id='btn-concluir-todo' type="submit" class="btn btn-success"
+          form="form-modal-concluir">Concluir</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalTodoEditar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="modalTodoEditarLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalTodoEditarLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id='form-modal-editar'>
+          <div class="mb-3">
+            <label for="titulo" class="form-label">Titulo</label>
+            <input type="text" class="form-control" id="titulo">
+          </div>
+          <div class="mb-3">
+            <label for="descricao" class="form-label">Descrição</label>
+            <textarea class="form-control" id="descricao" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="data_entrega" class="form-label">Data da entrega</label>
+            <input type="date" class="form-control" id="data_entrega">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id='btn-editar-todo' type="submit" class="btn btn-secondary" form="form-modal-editar">Salvar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
