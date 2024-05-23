@@ -2,6 +2,22 @@ const csrftoken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 const headers = {
     'Content-Type': 'application/json',
     'X-CSRFToken': csrftoken
+};
+const modalNovoTodo = new bootstrap.Modal('#modalNovoTodo');
+const modalTodoConcluir = new bootstrap.Modal('#modalTodoConcluir');
+const modalTodoEditar = new bootstrap.Modal('#modalTodoEditar');
+const modalTodoDelete = new bootstrap.Modal('#modalTodoDelete');
+
+function limparForm(form){
+    const inputs = form.querySelectorAll('input');
+    const textAreas = form.querySelectorAll('textarea');
+
+    inputs.forEach (i =>{
+        i.value = ''
+    })
+    textAreas.forEach(i =>{
+        i.value = ''
+    })
 }
 
 async function listarTodos(){
@@ -50,6 +66,8 @@ async function newTodo(event){
             })
         });
         listarTodos();
+        modalNovoTodo.hide()
+        limparForm(form);
 
     } catch (erro) {
         console.log(erro);
@@ -63,6 +81,7 @@ async function deleteTodo(pk){
             headers:headers,
         });
         listarTodos();
+        modalTodoDelete.hide();
     } catch (error) {
         console.error(error);
     }
@@ -75,7 +94,7 @@ function abrirModalDelete(pk, fields){
     const descricao = document.querySelector('#modalTodoDelete #descricao');
     titulo.textContent = `${fields.titulo}`;
     descricao.textContent = `${fields.descricao}`;
-    new bootstrap.Modal('#modalTodoDelete').show();
+    modalTodoDelete.show();
 }
 
 async function concluirTodo(event, pk){
@@ -91,6 +110,8 @@ async function concluirTodo(event, pk){
             })
         });
         listarTodos();
+        limparForm(document.querySelector('#modalTodoConcluir'));
+        modalTodoConcluir.hide();
 
     } catch (error){
         console.log(error);
@@ -105,7 +126,7 @@ function abrirModalConcluir(pk, fields){
     const descricao = document.querySelector('#modalTodoConcluir #descricao');
     titulo.textContent = fields.titulo;
     descricao.textContent = fields.descricao;
-    new bootstrap.Modal('#modalTodoConcluir').show();
+    modalTodoConcluir.show();
 }
 
 async function editarTodo(event, pk){
@@ -125,6 +146,7 @@ async function editarTodo(event, pk){
             })
         });
         listarTodos();
+        modalTodoEditar.hide();
     } catch (error){
         console.error(error);
     }
@@ -137,14 +159,11 @@ function abrirModalEditar(pk, fields){
     const titulo = document.querySelector('#form-modal-editar #titulo');
     const descricao = document.querySelector('#form-modal-editar #descricao');
     const data_entrega = document.querySelector('#form-modal-editar #data_entrega');
-    console.log(descricao);
     titulo.value = fields.titulo;
-    descricao.textContent = fields.descricao;
-    console.log(descricao);
+    descricao.value = fields.descricao;
     data_entrega.value = new Date(fields.data_entrega).toISOString().split('T')[0];
-    new bootstrap.Modal('#modalTodoEditar').show();
+    modalTodoEditar.show();
 }
-
 
 window.addEventListener('load',listarTodos)
 
