@@ -9,6 +9,21 @@ todo
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoTodo">
   Nova tarefa
 </button>
+
+<div id="alertNovo" class="alert alert-success fade show p-2 mb-2" role="alert">
+  Tarefa salva.
+</div>
+
+<div id="alertConcluir" class="alert alert-success fade show p-2 mb-2" role="alert">
+  Tarefa concluida.
+</div>
+<div id="alertEditar" class="alert alert-success fade show p-2 mb-2" role="alert">
+  Tarefa editada.
+</div>
+<div id="alertDeleta" class="alert alert-success fade show p-2 mb-2" role="alert">
+  Tarefa excluida.
+</div>
+
 <table class="table" id="lista-todos">
   <thead>
     <tr>
@@ -29,7 +44,6 @@ todo
 </p>
 
 <!-- Modal -->
-
 <div class="modal fade" id="modalNovoTodo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="modalNovoTodoLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -55,7 +69,7 @@ todo
         </form>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" form="form-nova-tarefa" >Criar</button>
+        <button type="submit" class="btn btn-primary" form="form-nova-tarefa">Criar</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>

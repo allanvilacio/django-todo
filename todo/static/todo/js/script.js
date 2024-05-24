@@ -48,6 +48,19 @@ async function listarTodos(){
     }
 }
 
+function mostrarAlerta(idAlert){
+    const alert = document.querySelector(idAlert);
+    alert.style.display ='block';
+    alert.style.opacity = 1;
+    setTimeout(function (){
+        alert.style.transition = 'opacity 0.5s ease-out';
+        alert.style.opacity = 0;
+        setTimeout(function () {
+            alert.style.display = 'none';
+        }, 500);
+    }, 3000);
+}
+
 async function newTodo(event){
     event.preventDefault();
     const form = document.querySelector('#form-nova-tarefa');
@@ -66,7 +79,8 @@ async function newTodo(event){
             })
         });
         listarTodos();
-        modalNovoTodo.hide()
+        mostrarAlerta('#alertNovo');
+        modalNovoTodo.hide();
         limparForm(form);
 
     } catch (erro) {
@@ -81,6 +95,7 @@ async function deleteTodo(pk){
             headers:headers,
         });
         listarTodos();
+        mostrarAlerta('#alertDeleta');
         modalTodoDelete.hide();
     } catch (error) {
         console.error(error);
@@ -111,6 +126,7 @@ async function concluirTodo(event, pk){
         });
         listarTodos();
         limparForm(document.querySelector('#modalTodoConcluir'));
+        mostrarAlerta('#alertConcluir');
         modalTodoConcluir.hide();
 
     } catch (error){
@@ -146,6 +162,7 @@ async function editarTodo(event, pk){
             })
         });
         listarTodos();
+        mostrarAlerta('#alertEditar');
         modalTodoEditar.hide();
     } catch (error){
         console.error(error);
