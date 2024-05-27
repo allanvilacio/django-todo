@@ -1,12 +1,31 @@
+* {
+    box-sizing: border-box;
+    overflow-y: hidden;
+}
+
 .header {
-    background-color: gray;
+    height: 50px;
+    padding: 5px 10px;
+
+}
+.navbar {
+    background-color: #A9A9A9;
+}
+.navbar-toggler:focus {
+    box-shadow:none;
+}
+
+.main {
+    padding: 0px 10px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
 }
 
 .alert {
     min-width: 200px;
     position:fixed;
-    top: 30px;
-    right: 20px;
+    top: 56px;
+    right: 10px;
     display: none;
     transition: opacity 0.5s ease-out;
 }

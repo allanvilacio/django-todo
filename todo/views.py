@@ -9,10 +9,23 @@ import json
 def index(request):
     return render(request, 'todo/index.html')
 
+def concluidas(request):
+    return render(request, 'todo/concluidos.html')
+
 def listar_todos(request):
-    todos = Todo.objects.all()
-    todos = serialize('json', todos)
-    return JsonResponse(todos, safe=False)
+    try:
+        filtro = json.loads(request.body)
+        
+        data_conclusao =True
+        if filtro['data_conclusao'].lower()=='false':
+            data_conclusao = False
+        todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao)
+        todos = serialize('json', todos)
+
+        #return JsonResponse(todos, safe=False)
+        return JsonResponse({'status':200, 'data':todos})
+    except:
+        return JsonResponse({'status':400, 'data':'dados invalidos'})
 
 def new_todo(request):
     if request.method =='POST':

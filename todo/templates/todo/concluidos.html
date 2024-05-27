@@ -6,16 +6,6 @@ todo
 
 {% block content %}
 {% csrf_token %}
-<div class="header">
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNovoTodo">
-    Nova tarefa
-  </button>
-</div>
-
-
-<div id="alertNovo" class="alert alert-success fade show p-2 mb-2" role="alert">
-  Tarefa salva.
-</div>
 
 <div id="alertConcluir" class="alert alert-success fade show p-2 mb-2" role="alert">
   Tarefa concluida.
@@ -26,43 +16,38 @@ todo
 <div id="alertDeleta" class="alert alert-success fade show p-2 mb-2" role="alert">
   Tarefa excluida.
 </div>
-<div class="main">
-  <table class="table" id="lista-todos">
-    <thead>
-      <tr>
-        <th scope="col">id</th>
-        <th scope="col">Titulo</th>
-        <th scope="col">Data criação</th>
-        <th scope="col">Data entrega</th>
-        <th scope="col">Data conclusão</th>
-        <th scope="col">Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-  <nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
-  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius totam exercitationem debitis provident repellat,
-    mollitia consequuntur nemo cumque, iure rem velit autem dolorem fuga assumenda incidunt maxime. Atque, mollitia
-    deleniti.
-  </p>
-</div>
+
+<table class="table" id="lista-todos">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">Titulo</th>
+      <th scope="col">Data criação</th>
+      <th scope="col">Data entrega</th>
+      <th scope="col">Data conclusão</th>
+      <th scope="col">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
 <!-- Modal -->
 <div class="modal fade" id="modalNovoTodo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

@@ -8,6 +8,16 @@ const modalTodoConcluir = new bootstrap.Modal('#modalTodoConcluir');
 const modalTodoEditar = new bootstrap.Modal('#modalTodoEditar');
 const modalTodoDelete = new bootstrap.Modal('#modalTodoDelete');
 
+let filtroConcluido = filterListTodo();
+
+function filterListTodo(){
+    if(window.location.pathname=='/'){
+        return 'true';
+    } if (window.location.pathname=='/concluidos/'){
+        return 'false';  
+    }
+}
+
 function limparForm(form){
     const inputs = form.querySelectorAll('input');
     const textAreas = form.querySelectorAll('textarea');
@@ -20,33 +30,42 @@ function limparForm(form){
     })
 }
 
-async function listarTodos(){
-    try {
-        const response = await fetch('/listar-todos/');
-        const data = JSON.parse(await response.json());
-        const tbody = document.querySelector('#lista-todos tbody');
-        tbody.textContent = '';
-        
-        data.forEach(todo => {
-            let tr = document.createElement('tr');
-            tr.innerHTML = `
-                <th scope="row">${todo.pk}</th>
-                <td>${todo.fields.titulo}</td>
-                <td>${new Date(todo.fields.data_criacao).toLocaleString()}</td>
-                <td>${new Date(todo.fields.data_entrega).toLocaleDateString()}</td>
-                <td>${todo.fields.data_conclusao ? new Date(todo.fields.data_conclusao).toLocaleDateString(): ''}</td>
-                <td>
-                    <button type="button" class="btn btn-success btn-sm" onclick='abrirModalConcluir(${todo.pk},${JSON.stringify(todo.fields)})'>Concluir</button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick='abrirModalEditar(${todo.pk},${JSON.stringify(todo.fields)})'>Editar</button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick='abrirModalDelete(${todo.pk}, ${JSON.stringify(todo.fields)})'>Excluir</button>
-                </td>`;
-                
-            tbody.appendChild(tr);
-        })
-    } catch (erro){
-        console.error(erro);
-    }
+async function getTodos(filtro){
+    const response = await fetch('/listar-todos/', {
+        method:'POST',
+        headers:headers,
+        body:JSON.stringify({
+            data_conclusao:filtro})
+    });
+    const data = await response.json();
+    data['data'] = JSON.parse(data['data']);
+    return data
 }
+
+async function listarTodos(filtroConcluido){
+    const response = await getTodos(filtroConcluido);
+
+    const tbody = document.querySelector('#lista-todos tbody');
+    tbody.textContent = '';
+        
+    response['data'].forEach(todo => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <th scope="row">${todo.pk}</th>
+            <td>${todo.fields.titulo}</td>
+            <td>${new Date(todo.fields.data_criacao).toLocaleString()}</td>
+            <td>${new Date(todo.fields.data_entrega).toLocaleDateString()}</td>
+            <td>${todo.fields.data_conclusao ? new Date(todo.fields.data_conclusao).toLocaleDateString(): ''}</td>
+            <td>
+                <button type="button" class="btn btn-success btn-sm" onclick='abrirModalConcluir(${todo.pk},${JSON.stringify(todo.fields)})'>Concluir</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick='abrirModalEditar(${todo.pk},${JSON.stringify(todo.fields)})'>Editar</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick='abrirModalDelete(${todo.pk}, ${JSON.stringify(todo.fields)})'>Excluir</button>
+            </td>`;
+            
+        tbody.appendChild(tr);
+    })
+}
+
 
 function mostrarAlerta(idAlert){
     const alert = document.querySelector(idAlert);
@@ -78,7 +97,7 @@ async function newTodo(event){
                 'data_entrega':data_entrega
             })
         });
-        listarTodos();
+        listarTodos(filtroConcluido);
         mostrarAlerta('#alertNovo');
         modalNovoTodo.hide();
         limparForm(form);
@@ -94,7 +113,7 @@ async function deleteTodo(pk){
             method:'DELETE',
             headers:headers,
         });
-        listarTodos();
+        listarTodos(filtroConcluido);
         mostrarAlerta('#alertDeleta');
         modalTodoDelete.hide();
     } catch (error) {
@@ -124,7 +143,7 @@ async function concluirTodo(event, pk){
                 'data_conclusao':data_conclusao
             })
         });
-        listarTodos();
+        listarTodos(filtroConcluido);
         limparForm(document.querySelector('#modalTodoConcluir'));
         mostrarAlerta('#alertConcluir');
         modalTodoConcluir.hide();
@@ -161,7 +180,7 @@ async function editarTodo(event, pk){
                 'data_entrega':data_entrega
             })
         });
-        listarTodos();
+        listarTodos(filtroConcluido);
         mostrarAlerta('#alertEditar');
         modalTodoEditar.hide();
     } catch (error){
@@ -182,5 +201,4 @@ function abrirModalEditar(pk, fields){
     modalTodoEditar.show();
 }
 
-window.addEventListener('load',listarTodos)
-
+window.addEventListener('load',listarTodos(filtroConcluido))
