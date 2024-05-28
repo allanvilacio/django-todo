@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.core.serializers import serialize
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .models import Todo
 import json
@@ -12,20 +13,46 @@ def index(request):
 def concluidas(request):
     return render(request, 'todo/concluidos.html')
 
+def teste_pagine(request):
+    return render(request, 'todo/teste-paginacao.html')
+
+def listar_todos_paginator(request):
+    try:
+        body =json.loads(request.body) 
+        todos = Todo.objects.all()
+        paginator = Paginator(todos, 2)
+        page_number = body.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        todos_paginados = serialize('json', page_obj.object_list)
+        return JsonResponse({
+            'status': 200,
+            'data': todos_paginados,
+            'num_pages': paginator.num_pages
+        })
+    except Exception as e:
+        return JsonResponse({'status': 400, 'data': str(e)})
+
 def listar_todos(request):
     try:
-        filtro = json.loads(request.body)
-        
-        data_conclusao =True
-        if filtro['data_conclusao'].lower()=='false':
-            data_conclusao = False
-        todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao)
-        todos = serialize('json', todos)
+        body =json.loads(request.body)
+        print(body)
+        data_conclusao = body['data_conclusao'].lower() == 'true'
 
-        #return JsonResponse(todos, safe=False)
-        return JsonResponse({'status':200, 'data':todos})
-    except:
-        return JsonResponse({'status':400, 'data':'dados invalidos'})
+        todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao)
+        paginator = Paginator(todos, 2)
+        page_number = body.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        todos_paginados = serialize('json', page_obj.object_list)
+        return JsonResponse({
+            'status': 200,
+            'data': todos_paginados,
+            'num_pages': paginator.num_pages
+        })
+    except Exception as e:
+        return JsonResponse({'status': 400, 'data': str(e)})
+
 
 def new_todo(request):
     if request.method =='POST':

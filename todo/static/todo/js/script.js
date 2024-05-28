@@ -12,9 +12,9 @@ let filtroConcluido = filterListTodo();
 
 function filterListTodo(){
     if(window.location.pathname=='/'){
-        return 'true';
+        return 'True';
     } if (window.location.pathname=='/concluidos/'){
-        return 'false';  
+        return 'False';  
     }
 }
 
@@ -30,25 +30,68 @@ function limparForm(form){
     })
 }
 
-async function getTodos(filtro){
+function atualizaPaginacao (filtro, num_pages, page){
+    const pagination = document.querySelector('.pagination');
+    pagination.innerHTML = ''; 
+
+    const previousItem = document.createElement('li');
+    previousItem.innerHTML = `
+        <a class="page-link ${page<=1 ? 'disabled':''}" onclick="listarTodos(${filtro}, ${page-1})" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    `;
+    pagination.appendChild(previousItem)
+
+    for(let i = 1; i <= num_pages; i++) {
+        if (i>=(page-1) && i<=(page+1)) {
+            const pageItem = document.createElement('li');
+            pageItem.className = 'page-item';
+            pageItem.classList.toggle('active', i==page);
+            const pageLink = document.createElement('a');
+            pageLink.className = 'page-link';
+    
+            pageLink.textContent = i;
+            pageLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                listarTodos(filtro, i);
+            });
+            pageItem.appendChild(pageLink);
+            pagination.appendChild(pageItem);
+        }
+
+    }
+    const nextItem = document.createElement('li');
+    nextItem.innerHTML = `
+        <a class="page-link ${page>=num_pages ? 'disabled':''}" onclick="listarTodos(${filtro}, ${page+1})" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    `;
+    pagination.appendChild(nextItem);
+}
+
+
+async function getTodos(filtro, page){
     const response = await fetch('/listar-todos/', {
         method:'POST',
         headers:headers,
         body:JSON.stringify({
-            data_conclusao:filtro})
+            data_conclusao:filtro,
+            page: page
+        })
     });
     const data = await response.json();
     data['data'] = JSON.parse(data['data']);
     return data
 }
 
-async function listarTodos(filtroConcluido){
-    const response = await getTodos(filtroConcluido);
+async function listarTodos(filtro, page){
+    const response = await getTodos(filtro, page);
 
     const tbody = document.querySelector('#lista-todos tbody');
     tbody.textContent = '';
-        
+    
     response['data'].forEach(todo => {
+        // ... (mesmo código para criar e adicionar as linhas da tabela)
         let tr = document.createElement('tr');
         tr.innerHTML = `
             <th scope="row">${todo.pk}</th>
@@ -63,9 +106,9 @@ async function listarTodos(filtroConcluido){
             </td>`;
             
         tbody.appendChild(tr);
-    })
+    });
+    atualizaPaginacao(filtro, response['num_pages'], page)
 }
-
 
 function mostrarAlerta(idAlert){
     const alert = document.querySelector(idAlert);
@@ -201,4 +244,4 @@ function abrirModalEditar(pk, fields){
     modalTodoEditar.show();
 }
 
-window.addEventListener('load',listarTodos(filtroConcluido))
+window.addEventListener('load',listarTodos(filtroConcluido, 1))
