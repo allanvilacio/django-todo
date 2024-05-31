@@ -2,41 +2,23 @@ from django.shortcuts import render
 from django.core.serializers import serialize
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from .models import Todo
 import json
 
 # Create your views here.
 
+@login_required
 def index(request):
     return render(request, 'todo/index.html')
 
+@login_required
 def concluidas(request):
     return render(request, 'todo/concluidos.html')
-
-def teste_pagine(request):
-    return render(request, 'todo/teste-paginacao.html')
-
-def listar_todos_paginator(request):
-    try:
-        body =json.loads(request.body) 
-        todos = Todo.objects.all()
-        paginator = Paginator(todos, 2)
-        page_number = body.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        todos_paginados = serialize('json', page_obj.object_list)
-        return JsonResponse({
-            'status': 200,
-            'data': todos_paginados,
-            'num_pages': paginator.num_pages
-        })
-    except Exception as e:
-        return JsonResponse({'status': 400, 'data': str(e)})
 
 def listar_todos(request):
     try:
         body =json.loads(request.body)
-        print(body)
         data_conclusao = body['data_conclusao'].lower() == 'true'
 
         todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao)
