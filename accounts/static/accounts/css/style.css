@@ -1,0 +1,14 @@
+* {
+    box-sizing: border-box;
+}
+
+.form-login {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    width: 300px;
+}

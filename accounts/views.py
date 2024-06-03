@@ -1,8 +1,7 @@
-from django.shortcuts import render, HttpResponse, redirect
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 
-def login_view(request):
-          
+def login_view(request):    
     if request.method=='POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -11,7 +10,11 @@ def login_view(request):
             login(request, user)
             return redirect('home-todo')
         else:
-            return HttpResponse('Usuario ou senha invalido.')
+            return render(request, 'accounts/login.html',
+                          {'msg':'Usuario ou senha invalido.'})
     else:
-
         return render(request, 'accounts/login.html')
+    
+def logout_view(request):
+    logout(request)
+    return redirect('login')

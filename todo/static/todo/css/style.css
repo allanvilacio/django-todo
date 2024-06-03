@@ -5,18 +5,19 @@
 
 .header {
     height: 50px;
-    padding: 5px 10px;
+    padding: 5px 12px;
 
 }
 .navbar {
     background-color: #A9A9A9;
+
 }
 .navbar-toggler:focus {
     box-shadow:none;
 }
 
 .main {
-    padding: 0px 10px;
+    padding: 0px 12px;
     height: calc(100vh - 70px);
     overflow-y: auto;
 }
@@ -28,4 +29,8 @@
     right: 10px;
     display: none;
     transition: opacity 0.5s ease-out;
+}
+
+.logout {
+    margin-left: auto;
 }

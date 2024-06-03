@@ -1,20 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "accounts/base_accounts.html" %}
+
+{% block title %}
+login
+{% endblock title %}
+
+{% block content %}
+
+<div class="form-login">
     <div>
+        {% if msg %}
+            <div id="alertDeleta" class="alert alert-danger fade show p-2 mb-2" role="alert">
+                {{msg}}
+            </div>
+        {% endif %}
+
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
-            <label for="username" >username</label>
-            <input type="text" name="username">
-            <label for="password" >password</label>
-            <input type="password" name="password">
-            <button type="submit">login</button>
+            <div class="mb-3">
+                <label for="username" class="form-label">Usuario</label>
+                <input type="text" class="form-control" id="username" name="username">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+        
+            <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
-</body>
-</html>
+
+</div>
+
+{% endblock content %}
