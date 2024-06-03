@@ -36,7 +36,7 @@ function atualizaPaginacao (filtro, num_pages, page){
 
     const previousItem = document.createElement('li');
     previousItem.innerHTML = `
-        <a class="page-link ${page<=1 ? 'disabled':''}" onclick="listarTodos(${filtro}, ${page-1})" aria-label="Previous">
+        <a class="page-link ${page<=1 ? 'disabled':''}" onclick="listarTodos('${filtro}', ${page-1})" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
         </a>
     `;
@@ -62,7 +62,7 @@ function atualizaPaginacao (filtro, num_pages, page){
     }
     const nextItem = document.createElement('li');
     nextItem.innerHTML = `
-        <a class="page-link ${page>=num_pages ? 'disabled':''}" onclick="listarTodos(${filtro}, ${page+1})" aria-label="Next">
+        <a class="page-link ${page>=num_pages ? 'disabled':''}" onclick="listarTodos('${filtro}', ${page+1})" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
         </a>
     `;

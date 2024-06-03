@@ -3,6 +3,7 @@ from django.core.serializers import serialize
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .models import Todo
 import json
 
@@ -21,12 +22,13 @@ def listar_todos(request):
         body =json.loads(request.body)
         data_conclusao = body['data_conclusao'].lower() == 'true'
 
-        todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao)
-        paginator = Paginator(todos, 2)
+        todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao).order_by('id')
+        paginator = Paginator(todos, 10)
         page_number = body.get('page')
         page_obj = paginator.get_page(page_number)
 
         todos_paginados = serialize('json', page_obj.object_list)
+
         return JsonResponse({
             'status': 200,
             'data': todos_paginados,

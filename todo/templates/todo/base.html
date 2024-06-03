@@ -1,6 +1,7 @@
 {% load static %}
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,13 +28,19 @@
             <a class="nav-link active" aria-current="page" href="/concluidos/">Concluidas</a>
           </li>
         </ul>
-        <div class="logout">
-          <a class="nav-link active" aria-current="page" href="/auth/logout/">Logout</a>
+
+        <div class="btn-group logout">
+          <i class="bi bi-person-circle" role="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <p class="dropdown-item"><strong>{{ user.get_username }}</strong></p>
+            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li><a class="dropdown-item" href="/auth/logout/">Logout</a></li>
+          </ul>
         </div>
-          
       </div>
     </div>
   </nav>
+
   {% block content %}
 
   {% endblock %}
