@@ -22,7 +22,8 @@ def listar_todos(request):
         body =json.loads(request.body)
         data_conclusao = body['data_conclusao'].lower() == 'true'
 
-        todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao).order_by('id')
+        todos = Todo.objects.filter(data_conclusao__isnull=data_conclusao, 
+                                    usuario=request.user.id).order_by('id')
         paginator = Paginator(todos, 10)
         page_number = body.get('page')
         page_obj = paginator.get_page(page_number)
@@ -41,8 +42,10 @@ def listar_todos(request):
 def new_todo(request):
     if request.method =='POST':
         try:
+            user = User(pk=request.user.id)
             body = json.loads(request.body)
             tarefa = Todo(
+                usuario=user,
                 titulo=body.get('titulo'),
                 descricao=body.get('descricao'),
                 data_entrega=body.get('data_entrega'))
